@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>WANDERKIND</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1C1510; }
+  #stage {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(120% 90% at 50% 12%, #3A2A1E 0%, #211810 55%, #15100B 100%);
+    overflow: hidden;
+  }
+  #stage::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/></svg>");
+  }
+  .caption {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    font-family: "Courier New", monospace; font-size: 10px; letter-spacing: 0.24em;
+    text-transform: uppercase; color: rgba(236,224,201,0.32); z-index: 2; white-space: nowrap;
+  }
+  #root { position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="root"></div>
+</div>
+<div class="caption">Wanderkind · Walk forever free · interactive prototype</div>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#ECE0C9"/>
+    <g fill="none" stroke="#B4543A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M38 72 V42 a12 12 0 0 1 24 0 V72"/>
+      <circle cx="55" cy="58" r="1.8" fill="#B4543A" stroke="none"/>
+    </g>
+    <circle cx="50" cy="50" r="34" fill="none" stroke="#2A2018" stroke-width="1.4" opacity="0.5"/>
+  </svg>
+</template>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+/* ===== frames/ios-frame.jsx ===== */
+
+/* BEGIN USAGE */
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports (to window): IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+//
+// Usage — wrap your screen content in <IOSDevice> to get the bezel, status bar
+// and home indicator (props: title, dark, keyboard):
+//
+//   <IOSDevice title="Settings">
+//     ...your screen content...
+//   </IOSDevice>
+//   <IOSDevice dark title="Search" keyboard>…</IOSDevice>
+/* END USAGE */
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      {/* blur + tint */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      {/* shine */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {/* back chevron */}
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {/* trailing ellipsis */}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      {/* large title */}
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
+}
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false,
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* dynamic island */}
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      {/* status bar (absolute) */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      {/* nav + content */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      {/* home indicator — always on top */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      {/* liquid glass bg — same recipe as nav pills */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* autocorrect bar */}
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* key layout */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+
+      {/* bottom spacer (emoji+mic area, icons omitted) */}
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+
+</script>
+<script type="text/babel">
+/* ===== src/tokens.jsx ===== */
+// tokens.jsx — WANDERKIND design system
+// Palette: parchment / walnut ink / terracotta / rare gold
+// Type: Helvetica Neue (voice) + Courier New (ledger / coordinates / stamps)
+
+const WK = {
+  // paper
+  paper0: '#F6EFE0',   // lightest highlight
+  paper:  '#ECE0C9',   // base parchment
+  paper2: '#E4D5BA',   // deeper paper / cards on paper
+  paper3: '#D9C6A4',   // edges / pressed
+  // ink
+  ink:    '#2A2018',   // near-black walnut, primary text
+  ink70:  'rgba(42,32,24,0.70)',
+  ink55:  'rgba(42,32,24,0.55)',
+  ink40:  'rgba(42,32,24,0.40)',
+  ink14:  'rgba(42,32,24,0.14)',
+  ink08:  'rgba(42,32,24,0.08)',
+  brown:  '#6F5840',   // mid brown
+  brownL: '#8A6E50',
+  // accents
+  terra:  '#B4543A',   // terracotta — the living accent
+  terraD: '#8F3E2A',   // pressed terracotta
+  terraL: '#C9694B',
+  gold:   '#B0853A',   // rare — verification / arrival / sacred
+  goldD:  '#8C6A2C',
+  // utility
+  good:   '#5E7350',   // moss
+};
+
+const WK_FONT_SANS = '"Helvetica Neue", Helvetica, Arial, sans-serif';
+const WK_FONT_MONO = '"Courier New", Courier, monospace';
+
+function injectWKStyles() {
+  if (document.getElementById('wk-global')) return;
+  const css = `
+  :root{ --paper:${WK.paper}; --ink:${WK.ink}; --terra:${WK.terra}; --gold:${WK.gold}; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; }
+  .wk{ font-family:${WK_FONT_SANS}; color:${WK.ink}; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  .wk-mono{ font-family:${WK_FONT_MONO}; }
+  .wk-eyebrow{ font-family:${WK_FONT_MONO}; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:${WK.terra}; }
+  .wk-meta{ font-family:${WK_FONT_MONO}; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:${WK.ink55}; }
+  .wk-display{ font-weight:700; letter-spacing:-0.02em; line-height:0.94; }
+  .wk-h1{ font-weight:700; letter-spacing:-0.015em; line-height:1.0; }
+  .wk-serif-none{}
+  .wk-scroll{ overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .wk-scroll::-webkit-scrollbar{ display:none; }
+  .wk-fade-up{ animation:wkFadeUp .6s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes wkFadeUp{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:none;} }
+  .wk-fade-in{ animation:wkFadeIn .5s ease both; }
+  @keyframes wkFadeIn{ from{opacity:0} to{opacity:1} }
+  @keyframes wkStamp{ 0%{opacity:0; transform:scale(2.6) rotate(var(--rot,-8deg));} 55%{opacity:1;} 70%{transform:scale(.94) rotate(var(--rot,-8deg));} 100%{opacity:1; transform:scale(1) rotate(var(--rot,-8deg));} }
+  .wk-pressable{ transition:transform .12s ease, opacity .12s ease; cursor:pointer; }
+  .wk-pressable:active{ transform:scale(.97); opacity:.9; }
+  .wk-link{ color:${WK.terra}; text-decoration:none; }
+  @keyframes wkPulse{ 0%,100%{ transform:scale(1); opacity:.5 } 50%{ transform:scale(1.18); opacity:.15 } }
+  @keyframes wkSweep{ 0%{ transform:translateY(-100%);} 100%{ transform:translateY(100%);} }
+  @keyframes wkDash{ to{ stroke-dashoffset:0; } }
+  `;
+  const s = document.createElement('style');
+  s.id = 'wk-global';
+  s.textContent = css;
+  document.head.appendChild(s);
+}
+
+// ── Paper texture overlay (fibrous grain + soft vignette) ───────────────
+function WKPaper({ tone = 'paper', vignette = true, children, style = {} }) {
+  const bg = WK[tone] || tone;
+  return (
+    <div style={{ position: 'relative', background: bg, ...style }}>
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
+        backgroundImage:
+          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/></svg>\")",
+        mixBlendMode: 'multiply',
+      }} />
+      {vignette && <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
+        background: 'radial-gradient(120% 80% at 50% 0%, rgba(0,0,0,0) 55%, rgba(42,32,24,0.06) 100%)',
+      }} />}
+      <div style={{ position: 'relative', zIndex: 1, height: '100%' }}>{children}</div>
+    </div>
+  );
+}
+
+// ── Rubber-stamp / wax-seal motif ───────────────────────────────────────
+// kind: 'peak' | 'church' | 'festival' | 'door' | 'sea' | 'star' | 'bridge'
+function WKStamp({ kind = 'peak', label = '', sub = '', ink = WK.terra, size = 92, rot = -7, animate = false, faded = false }) {
+  const id = React.useMemo(() => 'st' + Math.random().toString(36).slice(2, 7), []);
+  const glyphs = {
+    peak:     <path d="M14 64 L34 30 L44 44 L54 24 L78 64 Z" fill="none" stroke={ink} strokeWidth="3" strokeLinejoin="round"/>,
+    church:   <g fill="none" stroke={ink} strokeWidth="3"><path d="M46 16 V28 M40 22 H52"/><path d="M30 62 V40 L46 28 L62 40 V62"/><rect x="42" y="48" width="8" height="14"/></g>,
+    festival: <g fill="none" stroke={ink} strokeWidth="3"><path d="M46 20 V62"/><path d="M46 22 L70 30 L46 40 Z" fill={ink} opacity=".85"/></g>,
+    door:     <g fill="none" stroke={ink} strokeWidth="3"><path d="M30 64 V26 a16 16 0 0 1 32 0 V64"/><circle cx="55" cy="46" r="2.4" fill={ink}/></g>,
+    sea:      <g fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round"><path d="M20 40 q8 -8 16 0 t16 0 t16 0"/><path d="M20 52 q8 -8 16 0 t16 0 t16 0"/></g>,
+    star:     <path d="M46 22 l6 16 17 1 -13 11 5 17 -15 -10 -15 10 5 -17 -13 -11 17 -1 z" fill="none" stroke={ink} strokeWidth="2.6" strokeLinejoin="round"/>,
+    bridge:   <g fill="none" stroke={ink} strokeWidth="3"><path d="M16 44 q30 -22 60 0"/><path d="M16 44 V60 M76 44 V60 M31 50 V60 M46 53 V60 M61 50 V60"/></g>,
+  };
+  const r = size / 2;
+  return (
+    <div style={{
+      width: size, height: size, position: 'relative', flexShrink: 0,
+      opacity: faded ? 0.34 : 1,
+      ['--rot']: rot + 'deg',
+      transform: `rotate(${rot}deg)`,
+      animation: animate ? 'wkStamp .7s cubic-bezier(.2,.8,.2,1.1) both' : 'none',
+      filter: 'saturate(1.05)',
+    }}>
+      <svg width={size} height={size} viewBox="0 0 92 92" style={{ display: 'block' }}>
+        <defs>
+          <path id={id} d="M46,46 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0" />
+        </defs>
+        <circle cx="46" cy="46" r="40" fill="none" stroke={ink} strokeWidth="2.2" opacity="0.9"/>
+        <circle cx="46" cy="46" r="35.5" fill="none" stroke={ink} strokeWidth="1" opacity="0.6"/>
+        {glyphs[kind]}
+        <text fontFamily={WK_FONT_MONO} fontSize="7.2" letterSpacing="2.1" fill={ink} opacity="0.92">
+          <textPath href={`#${id}`} startOffset="0%">{label.toUpperCase()}</textPath>
+        </text>
+        {sub && <text x="46" y="78" textAnchor="middle" fontFamily={WK_FONT_MONO} fontSize="6.4" letterSpacing="1.4" fill={ink} opacity="0.8">{sub.toUpperCase()}</text>}
+      </svg>
+      {/* ink mottling */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: '50%', pointerEvents: 'none', mixBlendMode: 'screen',
+        backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='92' height='92'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='2'/></filter><circle cx='46' cy='46' r='42' filter='url(%23m)' opacity='0.5'/></svg>\")",
+      }} />
+    </div>
+  );
+}
+
+// ── Image placeholder (striped, with mono caption) ──────────────────────
+function WKImg({ label = 'image', tone = WK.paper3, ink = WK.brown, style = {}, children, rounded = 0 }) {
+  return (
+    <div style={{
+      position: 'relative', overflow: 'hidden', background: tone,
+      borderRadius: rounded, ...style,
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        backgroundImage: `repeating-linear-gradient(135deg, ${WK.ink08} 0 1px, transparent 1px 9px)`,
+      }} />
+      <div style={{ position: 'absolute', inset: 0, border: `1px solid ${WK.ink14}`, borderRadius: rounded }} />
+      {!children && <div style={{
+        position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
+        fontFamily: WK_FONT_MONO, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase',
+        color: ink, opacity: 0.6, whiteSpace: 'nowrap', textAlign: 'center',
+      }}>↳ {label}</div>}
+      {children}
+    </div>
+  );
+}
+
+// ── Buttons ─────────────────────────────────────────────────────────────
+function WKButton({ children, variant = 'solid', onClick, full = false, style = {}, icon = null, small = false }) {
+  const base = {
+    fontFamily: WK_FONT_SANS, fontWeight: 600, fontSize: small ? 13 : 15,
+    letterSpacing: '0.01em', border: 'none', cursor: 'pointer',
+    padding: small ? '10px 16px' : '15px 22px', borderRadius: 999,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 9,
+    width: full ? '100%' : 'auto', transition: 'transform .12s ease, background .2s ease, box-shadow .2s',
+  };
+  const variants = {
+    solid:   { background: WK.ink, color: WK.paper0 },
+    terra:   { background: WK.terra, color: '#FBF3E4', boxShadow: '0 8px 22px -10px rgba(143,62,42,0.7)' },
+    gold:    { background: WK.gold, color: '#FBF3E4', boxShadow: '0 8px 22px -10px rgba(140,106,44,0.7)' },
+    outline: { background: 'transparent', color: WK.ink, boxShadow: `inset 0 0 0 1.5px ${WK.ink}` },
+    ghost:   { background: WK.ink08, color: WK.ink },
+  };
+  return (
+    <button className="wk-pressable" style={{ ...base, ...variants[variant], ...style }} onClick={onClick}>
+      {icon}{children}
+    </button>
+  );
+}
+
+// ── Small bits ──────────────────────────────────────────────────────────
+function WKEyebrow({ children, style = {} }) {
+  return <div className="wk-eyebrow" style={style}>{children}</div>;
+}
+function WKDivider({ label, style = {} }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, ...style }}>
+      <div style={{ flex: 1, height: 1, background: WK.ink14 }} />
+      {label && <span className="wk-meta">{label}</span>}
+      <div style={{ flex: 1, height: 1, background: WK.ink14 }} />
+    </div>
+  );
+}
+// dotted ledger rule
+function WKRule({ style = {} }) {
+  return <div style={{ height: 1, backgroundImage: `repeating-linear-gradient(90deg, ${WK.ink40} 0 4px, transparent 4px 9px)`, opacity: 0.5, ...style }} />;
+}
+
+Object.assign(window, {
+  WK, WK_FONT_SANS, WK_FONT_MONO, injectWKStyles,
+  WKPaper, WKStamp, WKImg, WKButton, WKEyebrow, WKDivider, WKRule,
+});
+
+</script>
+<script type="text/babel">
+/* ===== src/icons.jsx ===== */
+// icons.jsx — minimal hand-tuned line icons for WANDERKIND
+// stroke icons sized via `s`, color via `c`. Geometric, ledger-like.
+
+function WKIcon({ name, s = 22, c = 'currentColor', sw = 1.7, fill = 'none', style = {} }) {
+  const p = { fill, stroke: c, strokeWidth: sw, strokeLinecap: 'round', strokeLinejoin: 'round' };
+  const paths = {
+    compass:  <g {...p}><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill={c} stroke="none"/></g>,
+    map:      <g {...p}><path d="M9 4L3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4z"/><path d="M9 4v14M15 6v14"/></g>,
+    pin:      <g {...p}><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></g>,
+    message:  <g {...p}><path d="M4 5h16v11H9l-4 4V5z"/></g>,
+    door:     <g {...p}><path d="M6 21V6a3 3 0 013-3h6a0 0 0 010 0v18M6 21h13"/><circle cx="13" cy="12" r="1" fill={c} stroke="none"/></g>,
+    book:     <g {...p}><path d="M5 4h9a3 3 0 013 3v13H8a3 3 0 00-3 3V4z"/><path d="M17 7h2v16M5 4a3 3 0 000 0"/></g>,
+    passport: <g {...p}><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M9 16h6"/></g>,
+    gift:     <g {...p}><rect x="4" y="9" width="16" height="11" rx="1"/><path d="M4 13h16M12 9v11"/><path d="M12 9S10 3 7.5 4.5 10 9 12 9zM12 9s2-6 4.5-4.5S14 9 12 9z"/></g>,
+    heart:    <g {...p}><path d="M12 20S4 14.5 4 8.8A4.2 4.2 0 0112 6a4.2 4.2 0 018 2.8C20 14.5 12 20 12 20z"/></g>,
+    seal:     <g {...p}><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12l2.5 2.5 4.5-5"/></g>,
+    camera:   <g {...p}><path d="M4 8h3l1.5-2h7L17 8h3v11H4V8z"/><circle cx="12" cy="13" r="3.2"/></g>,
+    chev:     <g {...p}><path d="M9 6l6 6-6 6"/></g>,
+    chevL:    <g {...p}><path d="M15 6l-6 6 6 6"/></g>,
+    plus:     <g {...p}><path d="M12 5v14M5 12h14"/></g>,
+    search:   <g {...p}><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></g>,
+    arrow:    <g {...p}><path d="M5 12h14M13 6l6 6-6 6"/></g>,
+    arrowUp:  <g {...p}><path d="M12 19V5M6 11l6-6 6 6"/></g>,
+    close:    <g {...p}><path d="M6 6l12 12M18 6L6 18"/></g>,
+    check:    <g {...p}><path d="M5 12.5l4.5 4.5L19 6.5"/></g>,
+    filter:   <g {...p}><path d="M4 6h16M7 12h10M10 18h4"/></g>,
+    boot:     <g {...p}><path d="M9 3v9l-3 1c-2 .7-2 3-2 5h16c0-2-1-3-3-3.5l-3-1V3H9z"/></g>,
+    flame:    <g {...p}><path d="M12 3s5 4 5 9a5 5 0 01-10 0c0-2 1-3 1-3s0 2 1.5 2S11 9 12 3z"/></g>,
+    moon:     <g {...p}><path d="M20 14a8 8 0 11-9-10 6.5 6.5 0 009 10z"/></g>,
+    sun:      <g {...p}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></g>,
+    coffee:   <g {...p}><path d="M5 8h12v5a4 4 0 01-4 4H9a4 4 0 01-4-4V8zM17 9h2a2 2 0 010 4h-2"/></g>,
+    key:      <g {...p}><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M14 12v2"/></g>,
+    bell:     <g {...p}><path d="M6 16V11a6 6 0 1112 0v5l2 2H4l2-2zM10 20a2 2 0 004 0"/></g>,
+    share:    <g {...p}><circle cx="6" cy="12" r="2.4"/><circle cx="17" cy="6" r="2.4"/><circle cx="17" cy="18" r="2.4"/><path d="M8.2 11l6.6-3.6M8.2 13l6.6 3.6"/></g>,
+    star:     <g {...p}><path d="M12 3.5l2.6 5.6 6 .6-4.5 4 1.3 6L12 20.7 6.6 19.7l1.3-6-4.5-4 6-.6z"/></g>,
+    quote:    <g {...p}><path d="M9 7H5v5h4V7zm0 0c0 4-2 5-2 5M19 7h-4v5h4V7zm0 0c0 4-2 5-2 5" /></g>,
+    globe:    <g {...p}><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></g>,
+    eye:      <g {...p}><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/></g>,
+    scan:     <g {...p}><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><circle cx="12" cy="12" r="3.5"/></g>,
+    location: <g {...p}><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></g>,
+  };
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" style={{ display: 'block', flexShrink: 0, ...style }}>
+      {paths[name] || null}
+    </svg>
+  );
+}
+
+window.WKIcon = WKIcon;
+
+</script>
+<script type="text/babel">
+/* ===== src/data.jsx ===== */
+// data.jsx — WANDERKIND mock data
+
+const WK_USER = {
+  name: 'Marit Sólberg',
+  handle: 'marit_walks',
+  since: '2024',
+  home: 'Bergen, Norway',
+  role: 'Wanderkind · Host',
+  km: 2840,
+  doors: 31,            // doors opened to her
+  hosted: 18,           // wanderers she has hosted
+  vouches: 24,
+  verified: true,
+  bio: 'Three years on foot between fjords and festivals. I keep a spare mattress, strong coffee, and an open door in Bergen.',
+  oath: 'I walk freely, and I keep my door open for those who do the same.',
+};
+
+// stamps the user has collected (experiences + host legacy)
+const WK_STAMPS = [
+  { kind: 'peak',     label: 'Galdhøpiggen', sub: '2469 m',   ink: 'terra', date: 'JUL 2025' },
+  { kind: 'church',   label: 'Nidaros',      sub: 'Trondheim',ink: 'brown', date: 'AUG 2025' },
+  { kind: 'door',     label: 'Hosted by Per',sub: '4 nights', ink: 'gold',  date: 'SEP 2025' },
+  { kind: 'sea',      label: 'Lofoten',      sub: 'North Sea', ink: 'brown', date: 'SEP 2025' },
+  { kind: 'festival', label: 'Roskilde',     sub: 'Solstice',  ink: 'terra', date: 'JUN 2025' },
+  { kind: 'door',     label: 'Hosted by Ana',sub: '2 nights',  ink: 'gold',  date: 'OCT 2025' },
+  { kind: 'bridge',   label: 'Storseisundet',sub: 'Atlantic Rd',ink:'brown', date: 'AUG 2025' },
+  { kind: 'star',     label: 'Aurora',       sub: 'Senja',     ink: 'terra', date: 'OCT 2025' },
+];
+
+// hosts to discover
+const WK_HOSTS = [
+  {
+    id: 'per', name: 'Per Lindqvist', place: 'Røros', country: 'Norway',
+    coord: '62.5747° N, 11.3848° E', dist: '14 km', role: 'Carpenter · Host',
+    blurb: 'Old mining town. Loft above the workshop, woodstove, room for two boots by the door.',
+    offers: ['Loft bed', 'Woodstove', 'Breakfast', 'Tool shed'],
+    vouches: 41, hosted: 63, since: '2023', verified: true, gold: true,
+    img: 'host · timber loft, Røros', stamp: 'door',
+    quote: 'Stay as long as the work and the weather allow.',
+  },
+  {
+    id: 'ana', name: 'Ana Ferreira', place: 'Porto', country: 'Portugal',
+    coord: '41.1579° N, 8.6291° W', dist: '2 310 km', role: 'Pilgrim · Host',
+    blurb: 'A blue-tiled house three streets from the river. I walked the Camino twice; now I keep the door open for those still walking.',
+    offers: ['Spare room', 'Shared kitchen', 'Laundry', 'Maps'],
+    vouches: 58, hosted: 92, since: '2022', verified: true, gold: true,
+    img: 'host · azulejo doorway, Porto', stamp: 'church',
+    quote: 'The way provides. So do I.',
+  },
+  {
+    id: 'ksenia', name: 'Ksenia Mor', place: 'Tbilisi', country: 'Georgia',
+    coord: '41.7151° N, 44.8271° E', dist: '4 020 km', role: 'Work & Travel · Host',
+    blurb: 'Top-floor flat under the vines. Couch is yours, wine is shared, the city is loud and kind.',
+    offers: ['Couch', 'Balcony', 'Wine', 'Wifi'],
+    vouches: 22, hosted: 29, since: '2024', verified: true, gold: false,
+    img: 'host · vine balcony, Tbilisi', stamp: 'festival',
+    quote: 'Come tired, leave louder.',
+  },
+  {
+    id: 'mateo', name: 'Mateo Rossi', place: 'Aosta', country: 'Italy',
+    coord: '45.7372° N, 7.3206° E', dist: '2 140 km', role: 'Shepherd · Host',
+    blurb: 'A stone refuge below the pass. Bring strong legs; leave with full bread and a stamped book.',
+    offers: ['Bunk', 'Bread', 'Mountain water', 'Stamp'],
+    vouches: 37, hosted: 51, since: '2023', verified: true, gold: false,
+    img: 'host · stone refuge, Aosta valley', stamp: 'peak',
+    quote: 'The mountain decides who arrives.',
+  },
+];
+
+// host messages / requests thread
+const WK_THREADS = [
+  { id: 'per', name: 'Per Lindqvist', place: 'Røros', last: 'The loft is yours from Thursday. Bring dry socks.', time: '2h', unread: true, status: 'accepted', img: 'Per' },
+  { id: 'ana', name: 'Ana Ferreira', place: 'Porto', last: 'You walked from Tui? Then you have earned a long sleep.', time: '1d', unread: false, status: 'accepted', img: 'Ana' },
+  { id: 'ksenia', name: 'Ksenia Mor', place: 'Tbilisi', last: 'Sent you a request — waiting to hear back.', time: '3d', unread: false, status: 'pending', img: 'Ks' },
+];
+
+const WK_CHAT = [
+  { from: 'them', text: 'You walked all the way from Dombås? Through the snow?', time: '09:02' },
+  { from: 'me',   text: 'Four days. The pass was open, barely. I have my Galdhøpiggen stamp to prove it.', time: '09:05' },
+  { from: 'them', text: 'Ha — then you have earned the loft. It is warm, the stove is lit.', time: '09:06', stampReact: 'peak' },
+  { from: 'them', text: 'The loft is yours from Thursday. Bring dry socks.', time: '09:07', accept: true },
+];
+
+// donation recipients
+const WK_CAUSES = [
+  { id: 'host', kind: 'A host', name: 'Per Lindqvist', place: 'Røros', note: 'For the woodstove and the strong coffee.', img: 'Per', suggested: [4, 9, 18] },
+  { id: 'wanderer', kind: 'A wanderer', name: 'Jonas, 19', place: 'walking to Santiago', note: 'Gap year on foot. 1 100 km to go.', img: 'Jonas', suggested: [5, 12, 25], progress: 0.62 },
+  { id: 'network', kind: 'The network', name: 'Keep Wanderkind free', place: 'for every walker', note: 'No ads. No fees. Walk forever free.', img: 'net', suggested: [3, 8, 20] },
+];
+
+Object.assign(window, { WK_USER, WK_STAMPS, WK_HOSTS, WK_THREADS, WK_CHAT, WK_CAUSES });
+
+</script>
+<script type="text/babel">
+/* ===== src/components.jsx ===== */
+// components.jsx — shared chrome, map, avatars
+
+// ── Avatar placeholder (parchment disc + initials, optional ring) ───────
+function WKAvatar({ name = '', size = 44, ring = false, gold = false, img }) {
+  const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('');
+  const ringC = gold ? WK.gold : WK.terra;
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%', flexShrink: 0,
+      position: 'relative', background: WK.paper3,
+      boxShadow: ring ? `0 0 0 2px ${WK.paper}, 0 0 0 ${size > 60 ? 3.5 : 2.5}px ${ringC}` : 'none',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        backgroundImage: `repeating-linear-gradient(135deg, ${WK.ink08} 0 1px, transparent 1px 7px)`,
+      }} />
+      <span style={{
+        position: 'relative', fontFamily: WK_FONT_MONO, fontWeight: 700,
+        fontSize: size * 0.34, color: WK.brown, letterSpacing: '0.02em',
+      }}>{initials}</span>
+      {gold && ring && <div style={{
+        position: 'absolute', right: -2, bottom: -2, width: size * 0.34, height: size * 0.34,
+        borderRadius: '50%', background: WK.gold, border: `1.5px solid ${WK.paper}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}><WKIcon name="check" s={size * 0.2} c="#FBF3E4" sw={2.4} /></div>}
+    </div>
+  );
+}
+
+// ── Chip / tag ──────────────────────────────────────────────────────────
+function WKChip({ children, active = false, onClick, icon }) {
+  return (
+    <button className="wk-pressable" onClick={onClick} style={{
+      display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
+      fontFamily: WK_FONT_MONO, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
+      padding: '7px 13px', borderRadius: 999, border: `1px solid ${active ? WK.ink : WK.ink14}`,
+      background: active ? WK.ink : 'transparent', color: active ? WK.paper0 : WK.ink70,
+      cursor: 'pointer',
+    }}>{icon}{children}</button>
+  );
+}
+
+// ── Stat (mono number + label) ──────────────────────────────────────────
+function WKStat({ value, label, accent }) {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 26, lineHeight: 1, color: accent || WK.ink }}>{value}</div>
+      <div className="wk-meta" style={{ marginTop: 6 }}>{label}</div>
+    </div>
+  );
+}
+
+// ── Section header ────────────────────────────────────────────────────────
+function WKSection({ eyebrow, title, action, onAction, style = {} }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', ...style }}>
+      <div>
+        {eyebrow && <WKEyebrow style={{ marginBottom: 7 }}>{eyebrow}</WKEyebrow>}
+        <div className="wk-h1" style={{ fontSize: 22 }}>{title}</div>
+      </div>
+      {action && <button onClick={onAction} className="wk-pressable wk-meta" style={{ background: 'none', border: 'none', color: WK.terra, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>{action}<WKIcon name="arrow" s={13} c={WK.terra} /></button>}
+    </div>
+  );
+}
+
+// ── Top bar (in-screen, not the device status bar) ──────────────────────
+function WKTopBar({ title, onBack, right, sub, transparent = false }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '8px 18px 12px', position: 'relative', zIndex: 5,
+      background: transparent ? 'transparent' : 'transparent',
+    }}>
+      {onBack && (
+        <button className="wk-pressable" onClick={onBack} style={{
+          width: 40, height: 40, borderRadius: '50%', border: `1px solid ${WK.ink14}`,
+          background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', flexShrink: 0,
+        }}><WKIcon name="chevL" s={20} c={WK.ink} /></button>
+      )}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {title && <div className="wk-h1" style={{ fontSize: 17, lineHeight: 1.1 }}>{title}</div>}
+        {sub && <div className="wk-meta" style={{ marginTop: 3 }}>{sub}</div>}
+      </div>
+      {right}
+    </div>
+  );
+}
+
+// ── Bottom tab bar ────────────────────────────────────────────────────────
+function WKTabBar({ active, go }) {
+  const tabs = [
+    { id: 'discover', icon: 'compass', label: 'Discover' },
+    { id: 'messages', icon: 'message', label: 'Messages' },
+    { id: 'door',     icon: 'door',    label: 'Your Door' },
+    { id: 'passport', icon: 'passport',label: 'Journal' },
+    { id: 'give',     icon: 'heart',   label: 'Give' },
+  ];
+  return (
+    <div style={{
+      flexShrink: 0, position: 'relative', zIndex: 30,
+      padding: '10px 8px 26px', display: 'flex', justifyContent: 'space-around',
+      background: 'linear-gradient(to top, ' + WK.paper2 + ' 70%, rgba(236,224,201,0))',
+      borderTop: `1px solid ${WK.ink14}`,
+    }}>
+      {tabs.map(t => {
+        const on = active === t.id;
+        return (
+          <button key={t.id} className="wk-pressable" onClick={() => go(t.id)} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '2px 6px',
+            flex: 1,
+          }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 24 }}>
+              {on && <div style={{ position: 'absolute', width: 34, height: 34, borderRadius: '50%', background: WK.terra, opacity: 0.12 }} />}
+              <WKIcon name={t.icon} s={22} c={on ? WK.terra : WK.ink40} sw={on ? 1.9 : 1.6} fill={on && (t.icon === 'heart' || t.icon === 'door') ? WK.terra : 'none'} />
+            </div>
+            <span style={{
+              fontFamily: WK_FONT_MONO, fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: on ? WK.terra : WK.ink40, fontWeight: on ? 700 : 400,
+            }}>{t.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Cartographic map (stylized, terracotta routes + pins) ───────────────
+function WKMap({ hosts, onPin, selected, style = {} }) {
+  // pin positions on the 360x520 canvas
+  const pins = [
+    { id: 'per',    x: 196, y: 150 },
+    { id: 'mateo',  x: 120, y: 300 },
+    { id: 'ana',    x: 78,  y: 420 },
+    { id: 'ksenia', x: 286, y: 360 },
+  ];
+  const here = { x: 250, y: 250 };
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', background: WK.paper2, ...style }}>
+      <svg viewBox="0 0 360 520" preserveAspectRatio="xMidYMid slice" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+        {/* faint coordinate grid */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <line key={'v' + i} x1={i * 40} y1="0" x2={i * 40} y2="520" stroke={WK.ink} strokeWidth="0.5" opacity="0.07" />
+        ))}
+        {Array.from({ length: 14 }).map((_, i) => (
+          <line key={'h' + i} x1="0" y1={i * 40} x2="360" y2={i * 40} stroke={WK.ink} strokeWidth="0.5" opacity="0.07" />
+        ))}
+        {/* abstract landmass blobs */}
+        <path d="M-20 120 q80 -40 150 10 t180 -20 l40 80 q-60 50 -140 40 t-160 60 -110 -40 z" fill={WK.paper3} opacity="0.5" />
+        <path d="M40 360 q70 -50 150 -10 t140 30 l10 140 -340 10 z" fill={WK.paper3} opacity="0.4" />
+        {/* coastline strokes */}
+        <path d="M-20 120 q80 -40 150 10 t180 -20" fill="none" stroke={WK.brown} strokeWidth="1.1" opacity="0.3" />
+        {/* dashed routes from "here" to each pin */}
+        {pins.map(pn => (
+          <path key={'r' + pn.id} d={`M${here.x} ${here.y} Q ${(here.x + pn.x) / 2 + 24} ${(here.y + pn.y) / 2 - 30} ${pn.x} ${pn.y}`}
+            fill="none" stroke={WK.terra} strokeWidth="1.4" strokeDasharray="2 6" strokeLinecap="round" opacity={selected === pn.id ? 0.9 : 0.4} />
+        ))}
+        {/* compass rose */}
+        <g transform="translate(312,60)" opacity="0.55">
+          <circle r="20" fill="none" stroke={WK.brown} strokeWidth="1" />
+          <path d="M0 -20 L4 0 L0 20 L-4 0 Z" fill={WK.terra} />
+          <path d="M-20 0 L0 -4 L20 0 L0 4 Z" fill={WK.brown} opacity="0.6" />
+          <text y="-24" textAnchor="middle" fontFamily={WK_FONT_MONO} fontSize="8" fill={WK.brown}>N</text>
+        </g>
+      </svg>
+      {/* "you are here" */}
+      <div style={{ position: 'absolute', left: `${here.x / 360 * 100}%`, top: `${here.y / 520 * 100}%`, transform: 'translate(-50%,-50%)' }}>
+        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', width: 46, height: 46, borderRadius: '50%', background: WK.terra, animation: 'wkPulse 2.6s ease-in-out infinite' }} />
+        <div style={{ position: 'relative', width: 14, height: 14, borderRadius: '50%', background: WK.terra, border: `2.5px solid ${WK.paper0}`, boxShadow: '0 2px 6px rgba(0,0,0,0.25)' }} />
+      </div>
+      {/* host pins */}
+      {pins.map(pn => {
+        const h = hosts.find(x => x.id === pn.id);
+        const on = selected === pn.id;
+        return (
+          <button key={pn.id} className="wk-pressable" onClick={() => onPin(pn.id)} style={{
+            position: 'absolute', left: `${pn.x / 360 * 100}%`, top: `${pn.y / 520 * 100}%`,
+            transform: `translate(-50%,-100%) scale(${on ? 1.12 : 1})`, background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: on ? 5 : 2,
+          }}>
+            <div style={{
+              padding: '4px 4px', borderRadius: 999, background: WK.paper0,
+              boxShadow: on ? `0 8px 20px -6px rgba(0,0,0,0.4)` : '0 3px 8px rgba(0,0,0,0.2)',
+              border: `1.5px solid ${h.gold ? WK.gold : WK.terra}`, display: 'flex', alignItems: 'center', gap: 6, paddingRight: on ? 11 : 4,
+            }}>
+              <WKAvatar name={h.name} size={26} />
+              {on && <span style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 12, color: WK.ink, whiteSpace: 'nowrap' }}>{h.place}</span>}
+            </div>
+            <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: `7px solid ${WK.paper0}`, marginTop: -1 }} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+Object.assign(window, { WKAvatar, WKChip, WKStat, WKSection, WKTopBar, WKTabBar, WKMap });
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-onboarding.jsx ===== */
+// screens-onboarding.jsx — the why / first run
+
+function WKOnboarding({ onEnter, onVerify }) {
+  const [step, setStep] = React.useState(0);
+  const manifesto = [
+    {
+      tag: 'I · Why', big: 'Walk\nforever\nfree.',
+      body: 'No price on a roof. No stranger at the door — only a wanderkind you have not met yet. The road belongs to those who keep it open.',
+      stamp: { kind: 'star', label: 'Walk Free', sub: 'Est. on foot', ink: WK.terra, rot: -8 },
+    },
+    {
+      tag: 'II · How', big: 'Every\nwanderkind\nis a host.',
+      body: 'You take a bed tonight; you give one tomorrow. Hospitality that travels in both directions, carried on foot from door to open door.',
+      stamp: { kind: 'door', label: 'Open Door', sub: 'Both ways', ink: WK.gold, rot: 6 },
+    },
+    {
+      tag: 'III · What', big: 'A web of\nopen doors.',
+      body: 'A network of verified wanderkinder who trust one another with open hearts and open doors — proven not by papers, but by faces, vouches, and the stamps of the road.',
+      stamp: { kind: 'seal', label: 'Verified', sub: 'By trust', ink: WK.terra, rot: -5 },
+    },
+  ];
+
+  // cover
+  if (step === 0) {
+    return (
+      <WKPaper tone="paper" style={{ height: '100%' }}>
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '0 26px' }}>
+          <div style={{ paddingTop: 64, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span className="wk-meta">№ 001 / Wanderkind</span>
+            <span className="wk-meta">Est. on foot</span>
+          </div>
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="wk-fade-up">
+            <div className="wk-eyebrow" style={{ marginBottom: 18 }}>The network of open doors</div>
+            <div className="wk-display" style={{ fontSize: 62, letterSpacing: '-0.03em' }}>
+              WANDER<br/>KIND
+            </div>
+            <div style={{ marginTop: 26, maxWidth: 280 }}>
+              <WKRule style={{ marginBottom: 16 }} />
+              <p className="wk-mono" style={{ fontSize: 13, lineHeight: 1.7, color: WK.ink70, margin: 0 }}>
+                Wanderers and hosts, one and the same. Walk into a town a stranger; sleep there as kin.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ position: 'absolute', right: -10, top: 150 }}>
+            <WKStamp kind="boot" label="On Foot" sub="Always" ink={WK.terra} rot={9} size={104} />
+          </div>
+
+          <div style={{ paddingBottom: 40, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <WKButton variant="terra" full onClick={() => setStep(1)} icon={<WKIcon name="arrow" s={18} c="#FBF3E4" />}>
+              Enter the network
+            </WKButton>
+            <button onClick={onEnter} className="wk-pressable wk-meta" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 6 }}>
+              I already wander here →
+            </button>
+          </div>
+        </div>
+      </WKPaper>
+    );
+  }
+
+  const m = manifesto[step - 1];
+  const last = step === manifesto.length;
+  return (
+    <WKPaper tone={step === 2 ? 'paper2' : 'paper'} style={{ height: '100%' }}>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '0 26px' }}>
+        <div style={{ paddingTop: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+          {manifesto.map((_, i) => (
+            <div key={i} style={{ flex: 1, height: 2.5, borderRadius: 2, background: i <= step - 1 ? WK.terra : WK.ink14 }} />
+          ))}
+          <button onClick={onEnter} className="wk-meta" style={{ background: 'none', border: 'none', cursor: 'pointer', color: WK.ink40, marginLeft: 6 }}>skip</button>
+        </div>
+
+        <div key={step} style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="wk-fade-up">
+          <div className="wk-eyebrow" style={{ marginBottom: 22 }}>{m.tag}</div>
+          <h1 className="wk-display" style={{ fontSize: 50, margin: 0, whiteSpace: 'pre-line' }}>{m.big}</h1>
+          <div style={{ margin: '30px 0 6px' }}>
+            <WKStamp {...m.stamp} animate size={90} />
+          </div>
+          <p style={{ fontSize: 16, lineHeight: 1.62, color: WK.ink70, maxWidth: 320, marginTop: 18, textWrap: 'pretty' }}>{m.body}</p>
+        </div>
+
+        <div style={{ paddingBottom: 40, display: 'flex', gap: 12, alignItems: 'center' }}>
+          {last ? (
+            <WKButton variant="terra" full onClick={onVerify} icon={<WKIcon name="scan" s={18} c="#FBF3E4" />}>
+              Verify & begin
+            </WKButton>
+          ) : (
+            <>
+              <WKButton variant="outline" small onClick={onEnter}>Look around first</WKButton>
+              <WKButton variant="terra" full onClick={() => setStep(step + 1)} icon={<WKIcon name="arrow" s={18} c="#FBF3E4" />}>Next</WKButton>
+            </>
+          )}
+        </div>
+      </div>
+    </WKPaper>
+  );
+}
+
+window.WKOnboarding = WKOnboarding;
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-discover.jsx ===== */
+// screens-discover.jsx — browse hosts via map or list
+
+function WKHostCard({ h, onClick, compact = false }) {
+  return (
+    <div className="wk-pressable" onClick={onClick} style={{
+      background: WK.paper0, borderRadius: 20, overflow: 'hidden',
+      border: `1px solid ${WK.ink14}`, boxShadow: '0 10px 24px -18px rgba(42,32,24,0.5)',
+    }}>
+      <div style={{ position: 'relative', height: compact ? 120 : 156 }}>
+        <WKImg label={h.img} tone={WK.paper3} style={{ position: 'absolute', inset: 0 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(42,32,24,0.45), transparent 55%)' }} />
+        <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 7 }}>
+          <span className="wk-mono" style={{ fontSize: 10, letterSpacing: '0.08em', background: WK.paper0, color: WK.ink, padding: '5px 9px', borderRadius: 999, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>{h.dist}</span>
+        </div>
+        <div style={{ position: 'absolute', top: 10, right: 10, opacity: 0.92 }}>
+          <WKStamp kind={h.stamp} label={h.place} sub={h.country} ink={h.gold ? WK.gold : WK.terra} size={60} rot={7} />
+        </div>
+        <div style={{ position: 'absolute', left: 14, bottom: 12, display: 'flex', alignItems: 'flex-end', gap: 10 }}>
+          <WKAvatar name={h.name} size={42} ring gold={h.gold} />
+          <div style={{ paddingBottom: 2 }}>
+            <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 16, color: WK.paper0, lineHeight: 1 }}>{h.name}</div>
+            <div className="wk-mono" style={{ fontSize: 10, color: 'rgba(246,239,224,0.85)', marginTop: 4, letterSpacing: '0.06em' }}>{h.role.toUpperCase()}</div>
+          </div>
+        </div>
+      </div>
+      <div style={{ padding: '14px 15px 15px' }}>
+        <div className="wk-mono" style={{ fontSize: 10.5, color: WK.ink55, letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <WKIcon name="pin" s={13} c={WK.terra} /> {h.place}, {h.country} · {h.coord}
+        </div>
+        {!compact && <p style={{ fontSize: 13.5, lineHeight: 1.5, color: WK.ink70, margin: '10px 0 12px', textWrap: 'pretty' }}>{h.blurb}</p>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: compact ? 10 : 0 }}>
+          {h.offers.slice(0, 4).map(o => (
+            <span key={o} className="wk-mono" style={{ fontSize: 10, letterSpacing: '0.04em', padding: '5px 9px', borderRadius: 7, background: WK.paper, border: `1px solid ${WK.ink14}`, color: WK.ink70 }}>{o}</span>
+          ))}
+        </div>
+        <WKRule style={{ margin: '13px 0 11px' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} className="wk-meta"><WKIcon name="seal" s={14} c={WK.brown} />{h.vouches} vouches</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} className="wk-meta"><WKIcon name="door" s={14} c={WK.brown} />{h.hosted} hosted</span>
+          </div>
+          <span className="wk-meta" style={{ color: WK.terra, display: 'flex', alignItems: 'center', gap: 4 }}>Open door <WKIcon name="arrow" s={13} c={WK.terra} /></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WKDiscover({ go }) {
+  const [mode, setMode] = React.useState('list'); // list | map
+  const [filter, setFilter] = React.useState('All');
+  const [sel, setSel] = React.useState('per');
+  const filters = ['All', 'On my route', 'Tonight', 'Carpenters', 'Pilgrims', 'Mountains'];
+  const selHost = WK_HOSTS.find(h => h.id === sel);
+
+  return (
+    <WKPaper tone="paper" style={{ height: '100%' }}>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {/* header */}
+        <div style={{ padding: '52px 20px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+            <div>
+              <div className="wk-eyebrow">Wherever your feet are</div>
+              <h1 className="wk-display" style={{ fontSize: 32, margin: '8px 0 0' }}>Open doors<br/>near you</h1>
+            </div>
+            <button className="wk-pressable" onClick={() => go('give')} style={{ width: 42, height: 42, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <WKIcon name="bell" s={20} c={WK.ink} />
+            </button>
+          </div>
+
+          {/* search + toggle */}
+          <div style={{ display: 'flex', gap: 9, marginTop: 18 }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 9, padding: '11px 15px', borderRadius: 999, background: WK.paper0, border: `1px solid ${WK.ink14}` }}>
+              <WKIcon name="search" s={18} c={WK.ink40} />
+              <span className="wk-mono" style={{ fontSize: 12.5, color: WK.ink40, letterSpacing: '0.03em' }}>Town, trail, or coordinate…</span>
+            </div>
+            <div style={{ display: 'flex', background: WK.paper0, borderRadius: 999, border: `1px solid ${WK.ink14}`, padding: 3 }}>
+              {[['list', 'book'], ['map', 'map']].map(([m, ic]) => (
+                <button key={m} className="wk-pressable" onClick={() => setMode(m)} style={{ width: 42, height: 38, borderRadius: 999, border: 'none', cursor: 'pointer', background: mode === m ? WK.ink : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <WKIcon name={ic} s={19} c={mode === m ? WK.paper0 : WK.ink40} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* filter chips */}
+          <div className="wk-scroll" style={{ display: 'flex', gap: 8, marginTop: 13, paddingBottom: 14, overflowX: 'auto' }}>
+            {filters.map(f => <WKChip key={f} active={filter === f} onClick={() => setFilter(f)}>{f}</WKChip>)}
+          </div>
+        </div>
+
+        {/* body */}
+        {mode === 'list' ? (
+          <div className="wk-scroll" style={{ flex: 1, padding: '2px 20px 22px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="wk-meta" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>{WK_HOSTS.length} doors open</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><WKIcon name="filter" s={13} c={WK.ink55} /> nearest first</span>
+            </div>
+            {WK_HOSTS.map((h, i) => (
+              <div key={h.id} className="wk-fade-up" style={{ animationDelay: `${i * 0.05}s` }}>
+                <WKHostCard h={h} onClick={() => go('host:' + h.id)} />
+              </div>
+            ))}
+            <div style={{ textAlign: 'center', padding: '12px 0 4px' }}>
+              <WKStamp kind="boot" label="Walk On" sub="Load more" ink={WK.brown} size={72} rot={-6} />
+              <div className="wk-meta" style={{ marginTop: 8 }}>The road continues ↓</div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ flex: 1, position: 'relative' }}>
+            <WKMap hosts={WK_HOSTS} selected={sel} onPin={setSel} />
+            {/* selected host preview */}
+            {selHost && (
+              <div key={sel} className="wk-fade-up" style={{ position: 'absolute', left: 16, right: 16, bottom: 16 }}>
+                <WKHostCard h={selHost} compact onClick={() => go('host:' + selHost.id)} />
+              </div>
+            )}
+            <div style={{ position: 'absolute', top: 12, left: 16 }} className="wk-meta">
+              <span style={{ background: WK.paper0, padding: '6px 11px', borderRadius: 999, border: `1px solid ${WK.ink14}`, display: 'inline-flex', alignItems: 'center', gap: 6 }}><WKIcon name="location" s={13} c={WK.terra} /> Bergen · 60.39° N</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </WKPaper>
+  );
+}
+
+Object.assign(window, { WKDiscover, WKHostCard });
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-host-detail.jsx ===== */
+// screens-host-detail.jsx — a host's open door + request to stay
+
+function WKHostDetail({ id, go, back }) {
+  const h = WK_HOSTS.find(x => x.id === id) || WK_HOSTS[0];
+  const [reqOpen, setReqOpen] = React.useState(false);
+  return (
+    <WKPaper tone="paper" style={{ height: '100%' }}>
+      <div className="wk-scroll" style={{ height: '100%' }}>
+        {/* hero */}
+        <div style={{ position: 'relative', height: 340 }}>
+          <WKImg label={h.img} tone={WK.paper3} style={{ position: 'absolute', inset: 0 }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, ' + WK.paper + ' 2%, rgba(236,224,201,0) 38%, rgba(42,32,24,0.35) 100%)' }} />
+          {/* top controls */}
+          <div style={{ position: 'absolute', top: 52, left: 18, right: 18, display: 'flex', justifyContent: 'space-between' }}>
+            <button className="wk-pressable" onClick={back} style={{ width: 42, height: 42, borderRadius: '50%', background: WK.paper0, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}><WKIcon name="chevL" s={20} c={WK.ink} /></button>
+            <button className="wk-pressable" style={{ width: 42, height: 42, borderRadius: '50%', background: WK.paper0, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}><WKIcon name="share" s={18} c={WK.ink} /></button>
+          </div>
+          <div style={{ position: 'absolute', right: 18, top: 108 }}>
+            <WKStamp kind={h.stamp} label={h.place} sub={h.country} ink={h.gold ? WK.gold : WK.terra} size={92} rot={8} />
+          </div>
+        </div>
+
+        {/* identity */}
+        <div style={{ padding: '0 22px', marginTop: -34, position: 'relative' }}>
+          <WKAvatar name={h.name} size={76} ring gold={h.gold} />
+          <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h1 className="wk-h1" style={{ fontSize: 28, margin: 0 }}>{h.name}</h1>
+            {h.verified && <WKIcon name="seal" s={20} c={WK.gold} fill="none" />}
+          </div>
+          <div className="wk-mono" style={{ fontSize: 11, color: WK.ink55, letterSpacing: '0.08em', marginTop: 6, textTransform: 'uppercase' }}>
+            {h.role} · {h.place}, {h.country}
+          </div>
+          <div className="wk-mono" style={{ fontSize: 10.5, color: WK.terra, letterSpacing: '0.06em', marginTop: 4 }}>{h.coord} · {h.dist} from you</div>
+
+          {/* quote */}
+          <div style={{ margin: '20px 0', padding: '18px 20px', background: WK.paper2, borderRadius: 16, border: `1px solid ${WK.ink14}`, position: 'relative' }}>
+            <WKIcon name="quote" s={22} c={WK.terra} style={{ marginBottom: 8 }} />
+            <p style={{ fontFamily: WK_FONT_SANS, fontStyle: 'italic', fontSize: 18, lineHeight: 1.4, margin: 0, color: WK.ink }}>“{h.quote}”</p>
+          </div>
+
+          <p style={{ fontSize: 15.5, lineHeight: 1.62, color: WK.ink70, textWrap: 'pretty' }}>{h.blurb}</p>
+
+          {/* stats */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '22px 4px', padding: '16px 0', borderTop: `1px solid ${WK.ink14}`, borderBottom: `1px solid ${WK.ink14}` }}>
+            <WKStat value={h.hosted} label="Wanderers hosted" />
+            <div style={{ width: 1, background: WK.ink14 }} />
+            <WKStat value={h.vouches} label="Vouches" accent={WK.terra} />
+            <div style={{ width: 1, background: WK.ink14 }} />
+            <WKStat value={'’' + h.since.slice(2)} label="Host since" />
+          </div>
+
+          {/* offers */}
+          <WKSection eyebrow="What waits behind the door" title="The offering" style={{ marginBottom: 14 }} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+            {h.offers.map((o, i) => (
+              <div key={o} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '13px 14px', background: WK.paper0, borderRadius: 13, border: `1px solid ${WK.ink14}` }}>
+                <WKIcon name={['key', 'flame', 'coffee', 'book', 'boot'][i % 5]} s={19} c={WK.terra} />
+                <span style={{ fontSize: 13.5, fontWeight: 500 }}>{o}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* host legacy stamps */}
+          <WKSection eyebrow="Proof of an open life" title="Their legacy" action="All" style={{ marginBottom: 16 }} />
+          <div className="wk-scroll" style={{ display: 'flex', gap: 4, overflowX: 'auto', paddingBottom: 8, marginBottom: 8 }}>
+            {WK_STAMPS.slice(0, 6).map((s, i) => (
+              <WKStamp key={i} kind={s.kind} label={s.label} sub={s.date} ink={WK[s.ink]} size={86} rot={i % 2 ? 5 : -6} />
+            ))}
+          </div>
+
+          {/* a vouch */}
+          <div style={{ margin: '14px 0 30px', padding: '16px 18px', background: WK.paper0, borderRadius: 16, border: `1px solid ${WK.ink14}`, display: 'flex', gap: 12 }}>
+            <WKAvatar name="Lena K" size={40} />
+            <div>
+              <div style={{ fontSize: 13.5, lineHeight: 1.5, color: WK.ink, textWrap: 'pretty' }}>“I arrived soaked to the bone. {h.name.split(' ')[0]} had the stove lit before I’d taken off my boots. This is what the network is for.”</div>
+              <div className="wk-meta" style={{ marginTop: 8 }}>Lena K. · vouched · Apr 2025</div>
+            </div>
+          </div>
+        </div>
+
+        {/* bottom CTA */}
+        <div style={{ position: 'sticky', bottom: 0, padding: '14px 20px 20px', background: 'linear-gradient(to top, ' + WK.paper + ' 72%, rgba(236,224,201,0))', display: 'flex', gap: 10 }}>
+          <WKButton variant="outline" onClick={() => go('give:host')} icon={<WKIcon name="gift" s={18} c={WK.ink} />}> </WKButton>
+          <WKButton variant="terra" full onClick={() => setReqOpen(true)} icon={<WKIcon name="door" s={18} c="#FBF3E4" />}>Ask to stay</WKButton>
+        </div>
+      </div>
+
+      {reqOpen && <WKRequestSheet h={h} onClose={() => setReqOpen(false)} onSend={() => { setReqOpen(false); go('chat:' + h.id); }} />}
+    </WKPaper>
+  );
+}
+
+// ── Request-to-stay sheet ─────────────────────────────────────────────────
+function WKRequestSheet({ h, onClose, onSend }) {
+  const [nights, setNights] = React.useState(2);
+  const [note, setNote] = React.useState('');
+  const presets = ['Walking the coast, arriving on foot Thursday.', 'Two days’ rest, then onward to the pass.', 'Carpenter on Wanderschaft — happy to lend hands.'];
+  return (
+    <div className="wk-fade-in" style={{ position: 'absolute', inset: 0, zIndex: 60, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+      <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(42,32,24,0.4)' }} />
+      <WKPaper tone="paper" style={{ position: 'relative', borderRadius: '26px 26px 0 0', boxShadow: '0 -10px 40px rgba(0,0,0,0.25)', animation: 'wkFadeUp .35s cubic-bezier(.2,.8,.2,1) both' }}>
+        <div style={{ padding: '14px 24px 30px' }}>
+          <div style={{ width: 40, height: 4, borderRadius: 2, background: WK.ink14, margin: '0 auto 18px' }} />
+          <WKEyebrow>Ask to stay</WKEyebrow>
+          <h2 className="wk-h1" style={{ fontSize: 24, margin: '8px 0 4px' }}>A knock on {h.name.split(' ')[0]}’s door</h2>
+          <p className="wk-mono" style={{ fontSize: 11.5, color: WK.ink55, letterSpacing: '0.03em' }}>{h.place}, {h.country} · {h.coord}</p>
+
+          <div className="wk-meta" style={{ margin: '20px 0 10px' }}>How many nights?</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[1, 2, 3, 5, 7].map(n => (
+              <button key={n} className="wk-pressable" onClick={() => setNights(n)} style={{ flex: 1, padding: '12px 0', borderRadius: 12, border: `1.5px solid ${nights === n ? WK.terra : WK.ink14}`, background: nights === n ? WK.terra : WK.paper0, color: nights === n ? '#FBF3E4' : WK.ink, fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>{n}</button>
+            ))}
+          </div>
+
+          <div className="wk-meta" style={{ margin: '20px 0 10px' }}>A word before you arrive</div>
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="Tell them where you’re walking from…" style={{ width: '100%', minHeight: 70, padding: '13px 15px', borderRadius: 14, border: `1px solid ${WK.ink14}`, background: WK.paper0, fontFamily: WK_FONT_SANS, fontSize: 14.5, color: WK.ink, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
+          <div className="wk-scroll" style={{ display: 'flex', gap: 7, marginTop: 10, overflowX: 'auto', paddingBottom: 4 }}>
+            {presets.map(p => <button key={p} className="wk-pressable" onClick={() => setNote(p)} style={{ whiteSpace: 'nowrap', fontFamily: WK_FONT_MONO, fontSize: 10.5, padding: '7px 11px', borderRadius: 999, border: `1px dashed ${WK.ink40}`, background: 'transparent', color: WK.ink70, cursor: 'pointer' }}>{p}</button>)}
+          </div>
+
+          <WKButton variant="terra" full style={{ marginTop: 20 }} onClick={onSend} icon={<WKIcon name="arrow" s={18} c="#FBF3E4" />}>Send the knock</WKButton>
+        </div>
+      </WKPaper>
+    </div>
+  );
+}
+
+Object.assign(window, { WKHostDetail, WKRequestSheet });
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-messages.jsx ===== */
+// screens-messages.jsx — request threads + conversation
+
+function WKMessages({ go }) {
+  return (
+    <WKPaper tone="paper" style={{ height: '100%' }}>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '52px 20px 6px' }}>
+          <div className="wk-eyebrow">Knocks & welcomes</div>
+          <h1 className="wk-display" style={{ fontSize: 32, margin: '8px 0 0' }}>Messages</h1>
+        </div>
+        <div className="wk-scroll" style={{ flex: 1, padding: '16px 20px 22px' }}>
+          {/* pending highlight */}
+          <div className="wk-meta" style={{ marginBottom: 10 }}>Open doors</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {WK_THREADS.map(t => (
+              <button key={t.id} className="wk-pressable" onClick={() => go('chat:' + t.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 13, padding: '13px 14px', borderRadius: 16,
+                background: WK.paper0, border: `1px solid ${t.unread ? WK.terra : WK.ink14}`, cursor: 'pointer', textAlign: 'left', width: '100%',
+              }}>
+                <div style={{ position: 'relative' }}>
+                  <WKAvatar name={t.name} size={48} ring={t.status === 'accepted'} gold={t.status === 'accepted'} />
+                  {t.unread && <div style={{ position: 'absolute', top: -1, right: -1, width: 11, height: 11, borderRadius: '50%', background: WK.terra, border: `2px solid ${WK.paper0}` }} />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 15.5 }}>{t.name}</span>
+                    <span className="wk-meta">{t.time}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 2 }}>
+                    <span className="wk-mono" style={{ fontSize: 9.5, letterSpacing: '0.08em', textTransform: 'uppercase', color: t.status === 'accepted' ? WK.good : WK.terra, padding: '2px 6px', borderRadius: 5, background: WK.paper, border: `1px solid ${WK.ink14}` }}>{t.status === 'accepted' ? '✓ ' + t.place : 'pending'}</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: WK.ink70, marginTop: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.last}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', padding: '34px 0 8px' }}>
+            <WKStamp kind="door" label="Keep Walking" sub="More doors" ink={WK.brown} size={76} rot={-5} />
+            <p className="wk-mono" style={{ fontSize: 11, color: WK.ink55, marginTop: 12, maxWidth: 220, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>Every knock is answered by a wanderkind who has knocked too.</p>
+          </div>
+        </div>
+      </div>
+    </WKPaper>
+  );
+}
+
+function WKChat({ id, go, back }) {
+  const h = WK_HOSTS.find(x => x.id === id) || { name: 'Per Lindqvist', place: 'Røros', country: 'Norway', gold: true, coord: '62.57° N' };
+  const [msgs, setMsgs] = React.useState(WK_CHAT);
+  const [draft, setDraft] = React.useState('');
+  const scrollRef = React.useRef(null);
+
+  React.useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight; }, [msgs]);
+
+  const send = () => {
+    if (!draft.trim()) return;
+    setMsgs(m => [...m, { from: 'me', text: draft, time: 'now' }]);
+    setDraft('');
+    setTimeout(() => setMsgs(m => [...m, { from: 'them', text: 'Good. The door is unlatched — walk in when you arrive.', time: 'now', accept: true }]), 1100);
+  };
+
+  return (
+    <WKPaper tone="paper" style={{ height: '100%' }}>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {/* header */}
+        <div style={{ paddingTop: 48 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 16px 12px', borderBottom: `1px solid ${WK.ink14}` }}>
+            <button className="wk-pressable" onClick={back} style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><WKIcon name="chevL" s={20} c={WK.ink} /></button>
+            <WKAvatar name={h.name} size={42} ring gold={h.gold} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 16 }}>{h.name}</div>
+              <div className="wk-mono" style={{ fontSize: 10, color: WK.terra, letterSpacing: '0.06em', marginTop: 2 }}>{h.place} · door open</div>
+            </div>
+            <button className="wk-pressable" onClick={() => go('host:' + (h.id || 'per'))} style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><WKIcon name="passport" s={19} c={WK.ink} /></button>
+          </div>
+        </div>
+
+        {/* messages */}
+        <div ref={scrollRef} className="wk-scroll" style={{ flex: 1, padding: '18px 18px 8px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="wk-meta" style={{ textAlign: 'center', margin: '4px 0 8px' }}>— You knocked · 2 nights · {h.place} —</div>
+          {msgs.map((m, i) => {
+            const me = m.from === 'me';
+            return (
+              <div key={i} className="wk-fade-up" style={{ display: 'flex', flexDirection: 'column', alignItems: me ? 'flex-end' : 'flex-start', gap: 4 }}>
+                <div style={{
+                  maxWidth: '80%', padding: '11px 15px', borderRadius: me ? '18px 18px 5px 18px' : '18px 18px 18px 5px',
+                  background: me ? WK.ink : WK.paper0, color: me ? WK.paper0 : WK.ink,
+                  border: me ? 'none' : `1px solid ${WK.ink14}`, fontSize: 14.5, lineHeight: 1.45,
+                }}>{m.text}</div>
+                {m.stampReact && <div style={{ marginTop: -2 }}><WKStamp kind={m.stampReact} label="Earned" sub="On foot" ink={WK.gold} size={58} rot={-8} /></div>}
+                {m.accept && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 4, padding: '7px 12px', borderRadius: 999, background: 'rgba(94,115,80,0.14)', border: `1px solid rgba(94,115,80,0.3)` }}>
+                    <WKIcon name="check" s={15} c={WK.good} sw={2.4} />
+                    <span className="wk-mono" style={{ fontSize: 10.5, letterSpacing: '0.06em', color: WK.good, textTransform: 'uppercase' }}>Door opened · stay confirmed</span>
+                  </div>
+                )}
+                <span className="wk-meta" style={{ fontSize: 9.5 }}>{m.time}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* composer */}
+        <div style={{ padding: '10px 16px 22px', borderTop: `1px solid ${WK.ink14}`, display: 'flex', alignItems: 'center', gap: 9 }}>
+          <button className="wk-pressable" onClick={() => go('give:host')} style={{ width: 42, height: 42, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}><WKIcon name="gift" s={19} c={WK.terra} /></button>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', background: WK.paper0, borderRadius: 999, border: `1px solid ${WK.ink14}`, padding: '4px 5px 4px 16px' }}>
+            <input value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()} placeholder="Write a word…" style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontFamily: WK_FONT_SANS, fontSize: 14.5, color: WK.ink }} />
+            <button className="wk-pressable" onClick={send} style={{ width: 38, height: 38, borderRadius: '50%', border: 'none', background: draft.trim() ? WK.terra : WK.ink14, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><WKIcon name="arrowUp" s={18} c={draft.trim() ? '#FBF3E4' : WK.ink40} /></button>
+          </div>
+        </div>
+      </div>
+    </WKPaper>
+  );
+}
+
+Object.assign(window, { WKMessages, WKChat });
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-door.jsx ===== */
+// screens-door.jsx — your door / become a host
+
+function WKDoor({ go }) {
+  const [open, setOpen] = React.useState(true);
+  const offering = [
+    { icon: 'flame', label: 'Woodstove loft', sub: 'Sleeps 2' },
+    { icon: 'coffee', label: 'Morning coffee', sub: 'Strong, always' },
+    { icon: 'key', label: 'Spare key', sub: 'Come & go' },
+    { icon: 'book', label: 'Maps & advice', sub: 'Local trails' },
+  ];
+  return (
+    <WKPaper tone="paper2" style={{ height: '100%' }}>
+      <div className="wk-scroll" style={{ height: '100%' }}>
+        <div style={{ padding: '52px 20px 0' }}>
+          <div className="wk-eyebrow">Every wanderkind is also a host</div>
+          <h1 className="wk-display" style={{ fontSize: 34, margin: '8px 0 0' }}>Your door</h1>
+        </div>
+
+        {/* the door — open/closed */}
+        <div style={{ padding: '22px 20px 0' }}>
+          <div style={{ position: 'relative', borderRadius: 22, overflow: 'hidden', border: `1px solid ${WK.ink14}`, background: open ? WK.terra : WK.paper3, transition: 'background .4s ease' }}>
+            <WKImg label="your home · Bergen loft" tone={open ? WK.terraD : WK.paper3} style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+            <div style={{ position: 'relative', padding: '22px 22px 20px', color: open ? '#FBF3E4' : WK.ink }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <div className="wk-mono" style={{ fontSize: 10.5, letterSpacing: '0.14em', textTransform: 'uppercase', opacity: 0.85 }}>{open ? 'Door open · tonight' : 'Door closed'}</div>
+                  <div className="wk-h1" style={{ fontSize: 26, marginTop: 8, color: 'inherit' }}>{open ? 'A bed is waiting' : 'Resting the latch'}</div>
+                </div>
+                <WKStamp kind="door" label={open ? 'Open' : 'Closed'} sub="Bergen" ink={open ? '#FBF3E4' : WK.brown} size={64} rot={8} />
+              </div>
+              {/* toggle */}
+              <button className="wk-pressable" onClick={() => setOpen(o => !o)} style={{
+                marginTop: 18, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '6px 6px 6px 16px', borderRadius: 999, border: 'none', cursor: 'pointer',
+                background: open ? 'rgba(251,243,228,0.2)' : WK.paper0,
+              }}>
+                <span className="wk-mono" style={{ fontSize: 11.5, letterSpacing: '0.06em', color: open ? '#FBF3E4' : WK.ink }}>{open ? 'OPEN TO WANDERERS' : 'TAP TO OPEN YOUR DOOR'}</span>
+                <span style={{ width: 52, height: 30, borderRadius: 999, background: open ? '#FBF3E4' : WK.ink14, position: 'relative', transition: 'background .3s', flexShrink: 0 }}>
+                  <span style={{ position: 'absolute', top: 3, left: open ? 25 : 3, width: 24, height: 24, borderRadius: '50%', background: open ? WK.terra : WK.paper0, transition: 'left .3s cubic-bezier(.2,.8,.2,1)' }} />
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* reciprocity ledger */}
+        <div style={{ padding: '22px 20px 0' }}>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ flex: 1, padding: '16px 16px', background: WK.paper0, borderRadius: 16, border: `1px solid ${WK.ink14}` }}>
+              <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 30, lineHeight: 1 }}>{WK_USER.hosted}</div>
+              <div className="wk-meta" style={{ marginTop: 6 }}>Doors you’ve opened</div>
+            </div>
+            <div style={{ flex: 1, padding: '16px 16px', background: WK.ink, borderRadius: 16, color: WK.paper0 }}>
+              <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 30, lineHeight: 1, color: WK.paper0 }}>{WK_USER.doors}</div>
+              <div className="wk-meta" style={{ marginTop: 6, color: 'rgba(246,239,224,0.6)' }}>Doors opened to you</div>
+            </div>
+          </div>
+          <div style={{ marginTop: 10, padding: '12px 16px', borderRadius: 14, border: `1px dashed ${WK.terra}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <WKIcon name="heart" s={18} c={WK.terra} fill={WK.terra} />
+            <span className="wk-mono" style={{ fontSize: 11, color: WK.ink70, letterSpacing: '0.03em', lineHeight: 1.5 }}>Give as you’ve been given. Balance is the only rent.</span>
+          </div>
+        </div>
+
+        {/* upcoming guest */}
+        <div style={{ padding: '24px 20px 0' }}>
+          <WKSection eyebrow="A knock at your door" title="Arriving soon" />
+          <div style={{ marginTop: 14, padding: '14px', background: WK.paper0, borderRadius: 16, border: `1px solid ${WK.ink14}`, display: 'flex', gap: 13, alignItems: 'center' }}>
+            <WKAvatar name="Tomas Vik" size={48} ring />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>Tomas Vik</div>
+              <div className="wk-mono" style={{ fontSize: 10.5, color: WK.ink55, marginTop: 3, letterSpacing: '0.04em' }}>Walking from Voss · arrives Fri · 2 nights</div>
+            </div>
+            <WKButton small variant="ghost" onClick={() => go('chat:per')}>Reply</WKButton>
+          </div>
+        </div>
+
+        {/* offering */}
+        <div style={{ padding: '24px 20px 0' }}>
+          <WKSection eyebrow="What you offer" title="Your offering" action="Edit" />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 14 }}>
+            {offering.map(o => (
+              <div key={o.label} style={{ padding: '14px', background: WK.paper0, borderRadius: 14, border: `1px solid ${WK.ink14}` }}>
+                <WKIcon name={o.icon} s={20} c={WK.terra} />
+                <div style={{ fontWeight: 600, fontSize: 13.5, marginTop: 9 }}>{o.label}</div>
+                <div className="wk-meta" style={{ marginTop: 3 }}>{o.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ padding: '26px 20px 28px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <WKStamp kind="door" label="Host Oath" sub="Sworn" ink={WK.gold} size={84} rot={-6} />
+            <p style={{ fontFamily: WK_FONT_SANS, fontStyle: 'italic', fontSize: 16, lineHeight: 1.5, color: WK.ink, maxWidth: 280, margin: '14px auto 0', textWrap: 'pretty' }}>“{WK_USER.oath}”</p>
+          </div>
+        </div>
+      </div>
+    </WKPaper>
+  );
+}
+
+window.WKDoor = WKDoor;
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-verify.jsx ===== */
+// screens-verify.jsx — biometric verification (image → live image, no documents)
+
+function WKVerify({ onDone, back, setDark }) {
+  const [stage, setStage] = React.useState('intro'); // intro | scan | live | done
+  React.useEffect(() => {
+    if (setDark) setDark(stage === 'scan' || stage === 'live');
+    return () => { if (setDark) setDark(false); };
+  }, [stage]);
+  const [prog, setProg] = React.useState(0);
+  const [liveStep, setLiveStep] = React.useState(0);
+  const liveCues = ['Look straight ahead', 'Turn gently left', 'Now turn right', 'Smile — you’re kin'];
+
+  React.useEffect(() => {
+    if (stage === 'scan') {
+      setProg(0);
+      const t = setInterval(() => setProg(p => {
+        if (p >= 100) { clearInterval(t); setTimeout(() => setStage('live'), 350); return 100; }
+        return p + 2.5;
+      }), 45);
+      return () => clearInterval(t);
+    }
+    if (stage === 'live') {
+      setLiveStep(0);
+      const t = setInterval(() => setLiveStep(s => {
+        if (s >= liveCues.length - 1) { clearInterval(t); setTimeout(() => setStage('done'), 800); return s; }
+        return s + 1;
+      }), 950);
+      return () => clearInterval(t);
+    }
+  }, [stage]);
+
+  // ── intro ──
+  if (stage === 'intro') {
+    return (
+      <WKPaper tone="paper" style={{ height: '100%' }}>
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '0 26px' }}>
+          <div style={{ paddingTop: 52 }}>
+            {back && <button className="wk-pressable" onClick={back} style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><WKIcon name="chevL" s={20} c={WK.ink} /></button>}
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="wk-fade-up">
+            <WKEyebrow>The only key to the network</WKEyebrow>
+            <h1 className="wk-display" style={{ fontSize: 44, margin: '16px 0 0' }}>A face,<br/>not papers.</h1>
+            <p style={{ fontSize: 16, lineHeight: 1.6, color: WK.ink70, marginTop: 20, maxWidth: 320, textWrap: 'pretty' }}>
+              No passport scan. No documents. We match a single photo to a living face — proof you are real, and the same wanderkind, every time you knock.
+            </p>
+            <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {[['eye', 'A quick liveness check', 'Look, turn, smile — ten seconds.'], ['seal', 'One identity, kept private', 'Your face never leaves your phone.'], ['heart', 'Trust the network can feel', 'Real people behind every open door.']].map(([ic, t, s]) => (
+                <div key={t} style={{ display: 'flex', gap: 13, alignItems: 'flex-start' }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 10, background: WK.paper2, border: `1px solid ${WK.ink14}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><WKIcon name={ic} s={19} c={WK.terra} /></div>
+                  <div><div style={{ fontWeight: 600, fontSize: 14.5 }}>{t}</div><div className="wk-mono" style={{ fontSize: 11, color: WK.ink55, marginTop: 3, letterSpacing: '0.02em' }}>{s}</div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ paddingBottom: 40 }}>
+            <WKButton variant="gold" full onClick={() => setStage('scan')} icon={<WKIcon name="scan" s={18} c="#FBF3E4" />}>Begin verification</WKButton>
+            {back && <button onClick={onDone} className="wk-pressable wk-meta" style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', padding: 14, marginTop: 4 }}>Maybe later →</button>}
+          </div>
+        </div>
+      </WKPaper>
+    );
+  }
+
+  // ── done ──
+  if (stage === 'done') {
+    return (
+      <WKPaper tone="paper" style={{ height: '100%' }}>
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 30px', textAlign: 'center' }}>
+          <WKStamp kind="seal" label="Verified Wanderkind" sub={WK_USER.home} ink={WK.gold} size={168} rot={-6} animate />
+          <h1 className="wk-display wk-fade-up" style={{ fontSize: 36, margin: '34px 0 0' }}>You are<br/>verified.</h1>
+          <p style={{ fontSize: 15.5, lineHeight: 1.6, color: WK.ink70, marginTop: 16, maxWidth: 300, textWrap: 'pretty' }} className="wk-fade-up">
+            Welcome to the network of open doors. Your face is your key — now go find the people waiting to meet you.
+          </p>
+          <div style={{ marginTop: 30, width: '100%', maxWidth: 320 }} className="wk-fade-up">
+            <WKButton variant="terra" full onClick={onDone} icon={<WKIcon name="arrow" s={18} c="#FBF3E4" />}>Enter the network</WKButton>
+          </div>
+        </div>
+      </WKPaper>
+    );
+  }
+
+  // ── scan / live (camera) ──
+  const scanning = stage === 'scan';
+  return (
+    <div style={{ height: '100%', background: WK.ink, position: 'relative', overflow: 'hidden' }}>
+      {/* camera placeholder */}
+      <WKImg label="live camera · your face" tone="#241B14" ink="rgba(246,239,224,0.4)" style={{ position: 'absolute', inset: 0 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(60% 50% at 50% 42%, transparent 40%, rgba(20,15,11,0.86) 78%)' }} />
+
+      {/* top */}
+      <div style={{ position: 'absolute', top: 50, left: 0, right: 0, padding: '0 22px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5 }}>
+        <button className="wk-pressable" onClick={() => setStage('intro')} style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(246,239,224,0.12)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><WKIcon name="close" s={18} c="#FBF3E4" /></button>
+        <span className="wk-mono" style={{ fontSize: 10.5, letterSpacing: '0.16em', color: 'rgba(246,239,224,0.7)', textTransform: 'uppercase' }}>Liveness check</span>
+        <div style={{ width: 40 }} />
+      </div>
+
+      {/* face oval + scan ring */}
+      <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%,-50%)', width: 230, height: 290 }}>
+        <svg width="230" height="290" viewBox="0 0 230 290" style={{ position: 'absolute', inset: 0 }}>
+          <ellipse cx="115" cy="145" rx="104" ry="134" fill="none" stroke="rgba(246,239,224,0.25)" strokeWidth="2" strokeDasharray="3 8" />
+          <ellipse cx="115" cy="145" rx="104" ry="134" fill="none" stroke={WK.gold} strokeWidth="3"
+            strokeDasharray={2 * Math.PI * 119} strokeDashoffset={2 * Math.PI * 119 * (1 - (scanning ? prog / 100 : 1))}
+            transform="rotate(-90 115 145)" style={{ transition: 'stroke-dashoffset .1s linear' }} strokeLinecap="round" />
+          {/* corner brackets */}
+          {[[20, 30], [210, 30], [20, 260], [210, 260]].map(([x, y], i) => (
+            <path key={i} d={`M${x} ${y}`} />
+          ))}
+        </svg>
+        {/* sweeping scan line */}
+        {scanning && <div style={{ position: 'absolute', left: 14, right: 14, top: 0, bottom: 0, overflow: 'hidden', borderRadius: '50%' }}>
+          <div style={{ position: 'absolute', left: 0, right: 0, height: 60, background: 'linear-gradient(to bottom, transparent, rgba(176,133,58,0.45), transparent)', animation: 'wkSweep 1.8s linear infinite' }} />
+        </div>}
+      </div>
+
+      {/* cue + progress */}
+      <div style={{ position: 'absolute', bottom: 56, left: 0, right: 0, padding: '0 32px', textAlign: 'center', zIndex: 5 }}>
+        <div key={scanning ? 'scan' : liveStep} className="wk-fade-up" style={{ marginBottom: 20 }}>
+          <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 24, color: '#FBF3E4', letterSpacing: '-0.01em' }}>
+            {scanning ? 'Reading your face…' : liveCues[liveStep]}
+          </div>
+          <div className="wk-mono" style={{ fontSize: 11, color: 'rgba(246,239,224,0.6)', letterSpacing: '0.06em', marginTop: 8 }}>
+            {scanning ? 'Hold steady — matching one photo to life' : `Step ${liveStep + 1} of ${liveCues.length}`}
+          </div>
+        </div>
+        {/* dots */}
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+          {(scanning ? [0] : liveCues).map((_, i) => (
+            <div key={i} style={{ width: scanning ? 120 : 30, height: 4, borderRadius: 2, background: 'rgba(246,239,224,0.2)', overflow: 'hidden' }}>
+              <div style={{ height: '100%', borderRadius: 2, background: WK.gold, width: scanning ? prog + '%' : (i <= liveStep ? '100%' : '0%'), transition: 'width .4s ease' }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+window.WKVerify = WKVerify;
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-passport.jsx ===== */
+// screens-passport.jsx — profile / wander journal / stamp legacy
+
+function WKPassport({ go }) {
+  const u = WK_USER;
+  const [tab, setTab] = React.useState('stamps'); // stamps | journal
+  const journal = [
+    { date: 'OCT 12', place: 'Senja', text: 'Slept under the aurora on Ksenia’s balcony. She woke me at 2am — the whole sky was green.', stamp: 'star' },
+    { date: 'SEP 28', place: 'Lofoten', text: 'Walked the shoreline for three days. The North Sea does not forgive wet boots.', stamp: 'sea' },
+    { date: 'SEP 04', place: 'Røros', text: 'Per kept the stove lit four nights. Left him a stamp and a promise to host the next walker through Bergen.', stamp: 'door' },
+  ];
+  return (
+    <WKPaper tone="paper" style={{ height: '100%' }}>
+      <div className="wk-scroll" style={{ height: '100%' }}>
+        {/* passport cover header */}
+        <div style={{ position: 'relative', padding: '52px 22px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span className="wk-meta">Wanderkind Passport · № 0427</span>
+            <button className="wk-pressable" style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><WKIcon name="globe" s={19} c={WK.ink} /></button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 16, marginTop: 22, alignItems: 'center' }}>
+            <WKAvatar name={u.name} size={84} ring gold />
+            <div style={{ flex: 1 }}>
+              <h1 className="wk-h1" style={{ fontSize: 26, margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}>{u.name.split(' ')[0]}<br/>{u.name.split(' ')[1]}</h1>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 11px', borderRadius: 999, background: 'rgba(176,133,58,0.14)', border: `1px solid rgba(176,133,58,0.4)` }}>
+              <WKIcon name="seal" s={14} c={WK.gold} /><span className="wk-mono" style={{ fontSize: 10, letterSpacing: '0.08em', color: WK.goldD, textTransform: 'uppercase' }}>Verified by face</span>
+            </span>
+            <span className="wk-mono" style={{ fontSize: 10.5, color: WK.ink55, letterSpacing: '0.05em' }}>{u.home} · since ’{u.since.slice(2)}</span>
+          </div>
+
+          <p style={{ fontSize: 14.5, lineHeight: 1.6, color: WK.ink70, marginTop: 16, textWrap: 'pretty' }}>{u.bio}</p>
+
+          {/* stats */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '18px 0', padding: '16px 4px', borderTop: `1px solid ${WK.ink14}`, borderBottom: `1px solid ${WK.ink14}` }}>
+            <WKStat value={u.km.toLocaleString()} label="km on foot" />
+            <div style={{ width: 1, background: WK.ink14 }} />
+            <WKStat value={u.doors} label="Doors opened" accent={WK.terra} />
+            <div style={{ width: 1, background: WK.ink14 }} />
+            <WKStat value={u.hosted} label="Hosted" />
+            <div style={{ width: 1, background: WK.ink14 }} />
+            <WKStat value={u.vouches} label="Vouches" />
+          </div>
+        </div>
+
+        {/* tabs */}
+        <div style={{ padding: '0 22px', display: 'flex', gap: 8 }}>
+          {[['stamps', 'The collection'], ['journal', 'The journal']].map(([id, label]) => (
+            <button key={id} className="wk-pressable" onClick={() => setTab(id)} style={{ flex: 1, padding: '11px 0', borderRadius: 12, border: 'none', cursor: 'pointer', background: tab === id ? WK.ink : 'transparent', color: tab === id ? WK.paper0 : WK.ink55, fontFamily: WK_FONT_MONO, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', boxShadow: tab === id ? 'none' : `inset 0 0 0 1px ${WK.ink14}` }}>{label}</button>
+          ))}
+        </div>
+
+        {/* stamps grid */}
+        {tab === 'stamps' ? (
+          <div style={{ padding: '20px 18px 0' }}>
+            <div className="wk-meta" style={{ marginBottom: 4, padding: '0 4px' }}>{WK_STAMPS.length} stamps · {new Set(WK_STAMPS.map(s => s.kind)).size} kinds · earned on foot</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginTop: 12, justifyItems: 'center' }}>
+              {WK_STAMPS.map((s, i) => (
+                <div key={i} style={{ textAlign: 'center' }} className="wk-fade-up">
+                  <WKStamp kind={s.kind} label={s.label} sub={s.sub} ink={WK[s.ink]} size={96} rot={i % 3 === 0 ? -7 : i % 3 === 1 ? 4 : -3} />
+                  <div className="wk-meta" style={{ fontSize: 9, marginTop: -2 }}>{s.date}</div>
+                </div>
+              ))}
+              {/* locked next stamp */}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ width: 96, height: 96, borderRadius: '50%', border: `1.5px dashed ${WK.ink40}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', margin: '0 auto' }}>
+                  <WKIcon name="plus" s={22} c={WK.ink40} />
+                  <span className="wk-mono" style={{ fontSize: 8, color: WK.ink40, marginTop: 4, letterSpacing: '0.1em' }}>NEXT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: '20px 22px 0' }}>
+            {journal.map((e, i) => (
+              <div key={i} style={{ display: 'flex', gap: 14, paddingBottom: 22 }} className="wk-fade-up">
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <WKStamp kind={e.stamp} label={e.place} sub={e.date} ink={WK.terra} size={56} rot={-5} />
+                  {i < journal.length - 1 && <div style={{ flex: 1, width: 1.5, marginTop: 6, backgroundImage: `repeating-linear-gradient(${WK.ink40} 0 4px, transparent 4px 9px)`, opacity: 0.5 }} />}
+                </div>
+                <div style={{ flex: 1, paddingTop: 2 }}>
+                  <div className="wk-meta">{e.date} · {e.place}</div>
+                  <p style={{ fontSize: 14.5, lineHeight: 1.55, color: WK.ink, marginTop: 6, textWrap: 'pretty' }}>{e.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* oath + actions */}
+        <div style={{ padding: '8px 22px 28px' }}>
+          <div style={{ padding: '20px', background: WK.paper2, borderRadius: 18, border: `1px solid ${WK.ink14}`, textAlign: 'center' }}>
+            <WKIcon name="quote" s={20} c={WK.terra} style={{ margin: '0 auto 8px' }} />
+            <p style={{ fontFamily: WK_FONT_SANS, fontStyle: 'italic', fontSize: 16.5, lineHeight: 1.45, color: WK.ink, margin: 0, textWrap: 'pretty' }}>“{u.oath}”</p>
+            <div className="wk-meta" style={{ marginTop: 12 }}>— sworn {u.since}</div>
+          </div>
+          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+            <WKButton variant="outline" full onClick={() => go('verify')} icon={<WKIcon name="seal" s={17} c={WK.ink} />}>Verification</WKButton>
+            <WKButton variant="ghost" full onClick={() => go('give:network')} icon={<WKIcon name="heart" s={17} c={WK.ink} />}>Support</WKButton>
+          </div>
+        </div>
+      </div>
+    </WKPaper>
+  );
+}
+
+window.WKPassport = WKPassport;
+
+</script>
+<script type="text/babel">
+/* ===== src/screens-give.jsx ===== */
+// screens-give.jsx — donations: a host, a wanderer, the network
+
+function WKGive({ focus, go, back }) {
+  const [sel, setSel] = React.useState(focus || 'wanderer');
+  const [amt, setAmt] = React.useState(null);
+  const [custom, setCustom] = React.useState('');
+  const [monthly, setMonthly] = React.useState(false);
+  const [done, setDone] = React.useState(false);
+  const cause = WK_CAUSES.find(c => c.id === sel);
+  const value = custom || amt;
+
+  const framing = { 4: 'a night’s bread', 9: 'a warm bed', 18: 'three days on the trail', 5: 'a pair of dry socks', 12: 'a week of coffee', 25: 'a mountain pass', 3: 'keeps one walker free', 8: 'a verified door', 20: 'a town stays open' };
+
+  if (done) {
+    return (
+      <WKPaper tone="paper" style={{ height: '100%' }}>
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 32px', textAlign: 'center' }}>
+          <WKStamp kind="heart" label="Gift Given" sub={'€' + value} ink={WK.gold} size={160} rot={-7} animate />
+          <h1 className="wk-display wk-fade-up" style={{ fontSize: 34, margin: '32px 0 0' }}>Thank you<br/>for walking<br/>with them.</h1>
+          <p className="wk-fade-up" style={{ fontSize: 15, lineHeight: 1.6, color: WK.ink70, marginTop: 16, maxWidth: 290, textWrap: 'pretty' }}>
+            €{value} {monthly ? 'every month ' : ''}to {cause.name}. {framing[value] ? 'That’s ' + framing[value] + '.' : ''} A stamp has been added to your ledger of kindness.
+          </p>
+          <div style={{ marginTop: 28, width: '100%', maxWidth: 320 }} className="wk-fade-up">
+            <WKButton variant="terra" full onClick={() => { setDone(false); setAmt(null); setCustom(''); go('discover'); }} icon={<WKIcon name="arrow" s={18} c="#FBF3E4" />}>Keep walking</WKButton>
+          </div>
+        </div>
+      </WKPaper>
+    );
+  }
+
+  return (
+    <WKPaper tone="paper" style={{ height: '100%' }}>
+      <div className="wk-scroll" style={{ height: '100%' }}>
+        <div style={{ padding: '52px 22px 0' }}>
+          {back && <button className="wk-pressable" onClick={back} style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${WK.ink14}`, background: WK.paper0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: 18 }}><WKIcon name="chevL" s={20} c={WK.ink} /></button>}
+          <WKEyebrow>Give as you’ve been given</WKEyebrow>
+          <h1 className="wk-display" style={{ fontSize: 34, margin: '8px 0 0' }}>Carry someone<br/>a little further</h1>
+          <p style={{ fontSize: 14.5, lineHeight: 1.6, color: WK.ink70, marginTop: 14, textWrap: 'pretty' }}>Walk forever free — for everyone. No fees on a gift; every cent reaches the feet that need it.</p>
+        </div>
+
+        {/* cause selector */}
+        <div className="wk-scroll" style={{ display: 'flex', gap: 10, overflowX: 'auto', padding: '20px 22px 6px' }}>
+          {WK_CAUSES.map(c => {
+            const on = sel === c.id;
+            return (
+              <button key={c.id} className="wk-pressable" onClick={() => { setSel(c.id); setAmt(null); setCustom(''); }} style={{
+                flexShrink: 0, width: 150, textAlign: 'left', padding: '14px', borderRadius: 16, cursor: 'pointer',
+                background: on ? WK.ink : WK.paper0, border: `1px solid ${on ? WK.ink : WK.ink14}`, color: on ? WK.paper0 : WK.ink,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <WKAvatar name={c.name} size={36} />
+                  {on && <WKIcon name="check" s={18} c={WK.gold} sw={2.4} />}
+                </div>
+                <div className="wk-mono" style={{ fontSize: 9.5, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 11, color: on ? WK.gold : WK.terra }}>{c.kind}</div>
+                <div style={{ fontWeight: 700, fontSize: 15, marginTop: 4 }}>{c.name}</div>
+                <div className="wk-mono" style={{ fontSize: 10, marginTop: 3, color: on ? 'rgba(246,239,224,0.6)' : WK.ink55 }}>{c.place}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* selected cause card */}
+        <div style={{ padding: '14px 22px 0' }}>
+          <div key={sel} className="wk-fade-up" style={{ padding: '18px', borderRadius: 18, background: WK.paper2, border: `1px solid ${WK.ink14}` }}>
+            <p style={{ fontSize: 14.5, lineHeight: 1.55, color: WK.ink, margin: 0, textWrap: 'pretty' }}>{cause.note}</p>
+            {cause.progress != null && (
+              <div style={{ marginTop: 14 }}>
+                <div style={{ height: 7, borderRadius: 4, background: WK.ink14, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${cause.progress * 100}%`, background: WK.terra, borderRadius: 4 }} />
+                </div>
+                <div className="wk-meta" style={{ marginTop: 7, display: 'flex', justifyContent: 'space-between' }}><span>{Math.round(cause.progress * 100)}% to Santiago</span><span>1 100 km to go</span></div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* amounts */}
+        <div style={{ padding: '20px 22px 0' }}>
+          <div className="wk-meta" style={{ marginBottom: 11 }}>Choose a gift</div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            {cause.suggested.map(a => {
+              const on = amt === a && !custom;
+              return (
+                <button key={a} className="wk-pressable" onClick={() => { setAmt(a); setCustom(''); }} style={{ flex: 1, padding: '16px 0 13px', borderRadius: 14, cursor: 'pointer', border: `1.5px solid ${on ? WK.terra : WK.ink14}`, background: on ? WK.terra : WK.paper0, color: on ? '#FBF3E4' : WK.ink, textAlign: 'center' }}>
+                  <div style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 22 }}>€{a}</div>
+                  <div className="wk-mono" style={{ fontSize: 8.5, letterSpacing: '0.04em', marginTop: 5, opacity: 0.85, lineHeight: 1.3, padding: '0 4px' }}>{(framing[a] || '').toUpperCase()}</div>
+                </button>
+              );
+            })}
+          </div>
+          {/* custom */}
+          <div style={{ marginTop: 11, display: 'flex', alignItems: 'center', gap: 10, padding: '4px 16px', borderRadius: 14, background: WK.paper0, border: `1px solid ${custom ? WK.terra : WK.ink14}` }}>
+            <span style={{ fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 20, color: WK.ink55 }}>€</span>
+            <input value={custom} onChange={e => { setCustom(e.target.value.replace(/[^0-9]/g, '')); setAmt(null); }} placeholder="another amount" inputMode="numeric" style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontFamily: WK_FONT_SANS, fontWeight: 700, fontSize: 18, color: WK.ink, padding: '14px 0' }} />
+          </div>
+
+          {/* monthly */}
+          <button className="wk-pressable" onClick={() => setMonthly(m => !m)} style={{ marginTop: 12, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 16px', borderRadius: 14, border: `1px solid ${WK.ink14}`, background: WK.paper0, cursor: 'pointer' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><WKIcon name="boot" s={18} c={WK.terra} /><span style={{ fontSize: 13.5, fontWeight: 500 }}>Walk with them every month</span></span>
+            <span style={{ width: 46, height: 27, borderRadius: 999, background: monthly ? WK.terra : WK.ink14, position: 'relative', flexShrink: 0 }}>
+              <span style={{ position: 'absolute', top: 3, left: monthly ? 22 : 3, width: 21, height: 21, borderRadius: '50%', background: WK.paper0, transition: 'left .25s' }} />
+            </span>
+          </button>
+        </div>
+
+        {/* give CTA */}
+        <div style={{ padding: '20px 22px 28px' }}>
+          <WKButton variant={value ? 'gold' : 'ghost'} full onClick={() => value && setDone(true)} style={{ opacity: value ? 1 : 0.55 }} icon={<WKIcon name="heart" s={18} c={value ? '#FBF3E4' : WK.ink40} fill={value ? '#FBF3E4' : 'none'} />}>
+            {value ? `Give €${value}${monthly ? ' / month' : ''}` : 'Choose a gift'}
+          </WKButton>
+          <div className="wk-mono" style={{ fontSize: 10, color: WK.ink40, textAlign: 'center', marginTop: 12, letterSpacing: '0.04em' }}>0% platform fee · secured · cancel anytime</div>
+        </div>
+      </div>
+    </WKPaper>
+  );
+}
+
+window.WKGive = WKGive;
+
+</script>
+<script type="text/babel">
+/* ===== src/app.jsx ===== */
+// app.jsx — WANDERKIND router + device shell
+
+function WanderkindApp() {
+  injectWKStyles();
+  const [route, setRoute] = React.useState('onboarding');
+  const [hist, setHist] = React.useState([]);
+  const [dark, setDark] = React.useState(false);
+
+  const go = (r) => { setHist(h => [...h, route]); setRoute(r); };
+  const back = () => setHist(h => { if (!h.length) return h; setRoute(h[h.length - 1]); return h.slice(0, -1); });
+  const reset = (r) => { setHist([]); setRoute(r); };
+
+  const [base, arg] = route.split(':');
+  const tabRoutes = ['discover', 'messages', 'door', 'passport', 'give'];
+  const showTab = tabRoutes.includes(route); // exact (no colon)
+  const activeTab = tabRoutes.includes(base) ? base : (base === 'host' ? 'discover' : base === 'chat' ? 'messages' : base === 'give' ? 'give' : base);
+
+  let screen;
+  switch (base) {
+    case 'onboarding': screen = <WKOnboarding onEnter={() => reset('discover')} onVerify={() => reset('verify')} />; break;
+    case 'verify':     screen = <WKVerify onDone={() => reset('discover')} back={hist.length ? back : null} setDark={setDark} />; break;
+    case 'discover':   screen = <WKDiscover go={go} />; break;
+    case 'messages':   screen = <WKMessages go={go} />; break;
+    case 'door':       screen = <WKDoor go={go} />; break;
+    case 'passport':   screen = <WKPassport go={go} />; break;
+    case 'give':       screen = <WKGive focus={arg} go={reset} back={arg ? back : null} />; break;
+    case 'host':       screen = <WKHostDetail id={arg} go={go} back={back} />; break;
+    case 'chat':       screen = <WKChat id={arg} go={go} back={back} />; break;
+    default:           screen = <WKDiscover go={go} />;
+  }
+
+  return (
+    <IOSDevice dark={dark}>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div key={route} className="wk-fade-in" style={{ flex: 1, minHeight: 0, position: 'relative' }}>
+          {screen}
+        </div>
+        {showTab && <WKTabBar active={activeTab} go={reset} />}
+      </div>
+    </IOSDevice>
+  );
+}
+
+window.WanderkindApp = WanderkindApp;
+
+</script>
+
+<script type="text/babel" data-presets="react">
+  function ScaledApp() {
+    const [scale, setScale] = React.useState(1);
+    React.useEffect(() => {
+      const fit = () => {
+        const margin = 40;
+        const s = Math.min(
+          (window.innerWidth - margin) / 402,
+          (window.innerHeight - margin) / 874,
+          1.05
+        );
+        setScale(s);
+      };
+      fit();
+      window.addEventListener('resize', fit);
+      return () => window.removeEventListener('resize', fit);
+    }, []);
+    return (
+      <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center', filter: 'drop-shadow(0 50px 90px rgba(0,0,0,0.55))' }}>
+        <WanderkindApp />
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<ScaledApp />);
+</script>
+</body>
+</html>
